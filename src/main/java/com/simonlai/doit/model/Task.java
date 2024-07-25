@@ -1,47 +1,41 @@
 package com.simonlai.doit.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Set;
 
 @Entity
+@Table(name = "task")
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    @Column(name = "task_id")
+    private long taskId;
 
+    @Column(nullable = false)
     private String title;
+    @Column
     private String description;
 
-    @Enumerated(EnumType.STRING)
-    private TaskStatus status;
+    @Column(nullable = false)
+    private Integer status;
 
-    @Enumerated(EnumType.STRING)
-    private TaskPriority priority;
-
+    @Column(nullable = false)
     private LocalDateTime dueDate;
-    private LocalDateTime createdAt;
-    private LocalDateTime updateAt;
-
-    @ElementCollection
-    private Set<String> tags;
-
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "task_id")
-    private List<SubTask> subTasksList;
+    @Column(nullable = false)
+    private LocalDateTime createDate;
+    @Column(nullable = false)
+    private LocalDateTime updateDate;
 }
 
-enum TaskStatus {
-    PENDING, IN_PROGRESS, COMPLETED
-}
-
-enum TaskPriority {
-    LOW, MEDIUM, HIGH
-}
+//enum TaskStatus {
+//    IN_PROGRESS, COMPLETED
+//}
