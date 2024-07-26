@@ -1,5 +1,6 @@
 package com.simonlai.doit.service.impl;
 
+import com.simonlai.doit.exception.TaskNotFoundException;
 import com.simonlai.doit.repository.TaskRepository;
 import com.simonlai.doit.model.Task;
 import com.simonlai.doit.service.TaskService;
@@ -18,4 +19,11 @@ public class TaskServiceImpl implements TaskService {
     public List<Task> getAllTasks() {
         return taskRepository.findAll();
     }
+
+    @Override
+    public Task getTaskById(Long taskId) {
+        return taskRepository.findById(taskId)
+                .orElseThrow(() -> new TaskNotFoundException(taskId));
+    }
+
 }
