@@ -19,7 +19,7 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
 
-    @GetMapping
+    @GetMapping("/getall")
     public List<Task> getAllTasks() {
         return taskService.getAllTasks();
     }
