@@ -45,4 +45,20 @@ public class TaskController {
 
     }
 
+    @PutMapping("/{taskId}")
+    public ResponseEntity<Task> updateTask(@PathVariable long taskId, @RequestBody TaskRequest taskRequest) {
+        // Check if the task exists
+        Task task = taskService.getTaskById(taskId);
+
+        // Didn't find the task
+        if (task == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        // Exists, update it
+        taskService.updateTask(taskId, taskRequest);
+
+        return ResponseEntity.status(HttpStatus.OK).body(taskService.getTaskById(taskId));
+    }
+
 }

@@ -13,4 +13,6 @@ public interface TaskService {
     Task getTaskById(Long taskId);
 
     long createTask(TaskRequest taskRequest);
+
+    void updateTask(long taskId, TaskRequest taskRequest);
 }

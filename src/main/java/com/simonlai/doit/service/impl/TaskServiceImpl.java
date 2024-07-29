@@ -38,6 +38,25 @@ public class TaskServiceImpl implements TaskService {
         return task.getTaskId();
     }
 
+    // Update the task
+    @Override
+    public void updateTask(long taskId, TaskRequest taskRequest) {
+        // Find the existing task entity by ID
+        Task existingTask = taskRepository.findById(taskId)
+                .orElseThrow(() -> new TaskNotFoundException(taskId));
+
+        // Update the task
+        existingTask.setTitle(taskRequest.getTitle());
+        existingTask.setDescription(taskRequest.getDescription());
+        existingTask.setStatus(taskRequest.getStatus());
+        existingTask.setDueDate(taskRequest.getDueDate());
+        existingTask.setUpdateDate(LocalDateTime.now());
+
+        // Save to DB
+        taskRepository.save(existingTask);
+    }
+
+    // Convert task request to task
     private Task taskRequestConvertToTask(TaskRequest taskRequest) {
         Task task = new Task();
         task.setTitle(taskRequest.getTitle());
