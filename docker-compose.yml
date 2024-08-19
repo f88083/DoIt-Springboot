@@ -9,10 +9,13 @@ services:
       MYSQL_DATABASE: doit
       MYSQL_USER: simon
       MYSQL_PASSWORD: 1234
+      TZ: Asia/Taipei
     ports:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+    command:
+      '--default-time-zone=+08:00'
 
 volumes:
   mysql_data:
