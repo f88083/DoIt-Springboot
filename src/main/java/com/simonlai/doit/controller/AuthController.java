@@ -4,6 +4,7 @@ import com.simonlai.doit.dto.LoginRequest;
 import com.simonlai.doit.dto.RegisterRequest;
 import com.simonlai.doit.model.User;
 import com.simonlai.doit.repository.UserRepository;
+import com.simonlai.doit.security.jwt.JwtUtil;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,9 @@ public class AuthController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest) {
@@ -45,10 +49,12 @@ public class AuthController {
 
         // Authenticate password
         if (user != null && passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+            String token = jwtUtil.generateToken(user.getUsername());
             // Successfully authenticated
             return ResponseEntity.ok().body(Map.of(
                     "message", "User logged in successfully!",
-                    "username", user.getUsername()));
+                    "username", user.getUsername(),
+                    "token", token)); // TODO: should put in cookies
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of(
