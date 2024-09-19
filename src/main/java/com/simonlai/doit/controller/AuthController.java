@@ -61,7 +61,7 @@ public class AuthController {
             cookie.setHttpOnly(true);
             // cookie.setSecure(true);
             // cookie.setSameSite(SameSite.LAX);
-            // FIXME: cookie time zone seems to be different from the local =
+            // FIXME: cookie time zone seems to be different from the local
             cookie.setMaxAge(24 * 60 * 60);// expires in 1 day
             cookie.setPath("/");
             response.addCookie(cookie);
