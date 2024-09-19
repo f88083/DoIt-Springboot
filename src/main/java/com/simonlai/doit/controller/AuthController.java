@@ -7,6 +7,7 @@ import com.simonlai.doit.repository.UserRepository;
 import com.simonlai.doit.security.jwt.JwtUtil;
 
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +58,7 @@ public class AuthController {
 
             // Prepare cookie
             Cookie cookie = new Cookie("jwt", jwtToken);
-            // cookie.setHttpOnly(true);
+            cookie.setHttpOnly(true);
             // cookie.setSecure(true);
             // cookie.setSameSite(SameSite.LAX);
             // FIXME: cookie time zone seems to be different from the local =
@@ -73,5 +74,20 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("message", "Invalid username or password"));
         }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logoutUser(HttpServletRequest request, HttpServletResponse response) {
+        // Clear the JWT cookie
+        Cookie cookie = new Cookie("jwt", null);
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(0); // Expire the cookie immediately
+        response.addCookie(cookie);
+
+        // TODO: invalidate the token on the server-side
+        // For example, add the token to a blacklist
+
+        return ResponseEntity.ok().body(Map.of("message", "Logged out successfully"));
     }
 }
