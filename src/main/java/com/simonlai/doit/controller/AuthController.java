@@ -60,6 +60,7 @@ public class AuthController {
             // cookie.setHttpOnly(true);
             // cookie.setSecure(true);
             // cookie.setSameSite(SameSite.LAX);
+            // FIXME: cookie time zone seems to be different from the local =
             cookie.setMaxAge(24 * 60 * 60);// expires in 1 day
             cookie.setPath("/");
             response.addCookie(cookie);
@@ -67,8 +68,7 @@ public class AuthController {
             // Successfully authenticated
             return ResponseEntity.ok().body(Map.of(
                     "message", "User logged in successfully!",
-                    "username", user.getUsername(),
-                    "token", jwtToken)); // TODO: should put in cookies
+                    "username", user.getUsername()));
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("message", "Invalid username or password"));
