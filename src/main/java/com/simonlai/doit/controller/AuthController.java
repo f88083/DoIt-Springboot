@@ -5,6 +5,9 @@ import com.simonlai.doit.dto.RegisterRequest;
 import com.simonlai.doit.model.User;
 import com.simonlai.doit.repository.UserRepository;
 import com.simonlai.doit.security.jwt.JwtUtil;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -42,23 +45,33 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         // Check user existent by username
         User user = userRepository.findByUsername(loginRequest.getUsername())
                 .orElse(null);
 
         // Authenticate password
         if (user != null && passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-            String token = jwtUtil.generateToken(user.getUsername());
+            // Prepare token
+            String jwtToken = jwtUtil.generateToken(user.getUsername());
+
+            // Prepare cookie
+            Cookie cookie = new Cookie("jwt", jwtToken);
+            // cookie.setHttpOnly(true);
+            // cookie.setSecure(true);
+            // cookie.setSameSite(SameSite.LAX);
+            cookie.setMaxAge(24 * 60 * 60);// expires in 1 day
+            cookie.setPath("/");
+            response.addCookie(cookie);
+
             // Successfully authenticated
             return ResponseEntity.ok().body(Map.of(
                     "message", "User logged in successfully!",
                     "username", user.getUsername(),
-                    "token", token)); // TODO: should put in cookies
+                    "token", jwtToken)); // TODO: should put in cookies
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of(
-                            "message", "Invalid username or password"));
+                    .body(Map.of("message", "Invalid username or password"));
         }
     }
 }
