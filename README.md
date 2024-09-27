@@ -36,10 +36,14 @@ The backend of DoIt is built using Spring Boot, following a layered architecture
 - Password encryption using BCrypt
 - CORS configuration for secure cross-origin requests
 
+***TODO: {Place holder for security authentication process diagram}***
+
 ### Database
 
 - MySQL database
 - JPA and Hibernate for ORM
+
+***TODO: {Place holder for database structure diagram}***
 
 ### API Endpoints
 
