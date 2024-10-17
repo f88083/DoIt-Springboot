@@ -160,7 +160,64 @@ class TaskServiceImplTest {
     }
 
     @Test
-    void updateTask() {
+    void updateTask_shouldUpdateExistingTask() {
+        // Arrange
+        long taskId = 1L;
+        Task taskGoingToBeUpdated = new Task();
+        taskGoingToBeUpdated.setTaskId(taskId);
+        taskGoingToBeUpdated.setTitle("Old Title");
+        taskGoingToBeUpdated.setDescription("Old Description");
+        taskGoingToBeUpdated.setStatus(0);
+        taskGoingToBeUpdated.setDueDate(LocalDateTime.now());
+        taskGoingToBeUpdated.setCreateDate(LocalDateTime.now().minusDays(1));
+        taskGoingToBeUpdated.setUpdateDate(LocalDateTime.now().minusDays(1));
+
+        // Preserve the old task
+        Task oldTask = new Task(
+                taskGoingToBeUpdated.getTaskId(),
+                taskGoingToBeUpdated.getTitle(),
+                taskGoingToBeUpdated.getDescription(),
+                taskGoingToBeUpdated.getStatus(),
+                taskGoingToBeUpdated.getDueDate(),
+                taskGoingToBeUpdated.getCreateDate(),
+                taskGoingToBeUpdated.getUpdateDate()
+        );
+
+        TaskRequest taskRequest = new TaskRequest();
+        taskRequest.setTitle("New Title");
+        taskRequest.setDescription("New Description");
+        taskRequest.setStatus(1);
+        taskRequest.setDueDate(LocalDateTime.now().plusDays(1));
+
+        // Mock when call findById
+        Mockito.when(taskRepository.findById(taskId)).thenReturn(Optional.of(taskGoingToBeUpdated));
+
+        // Act
+        taskService.updateTask(taskId, taskRequest);
+
+        assertEquals(taskRequest.getTitle(), taskGoingToBeUpdated.getTitle());
+        assertEquals(taskRequest.getDescription(), taskGoingToBeUpdated.getDescription());
+        assertEquals(taskRequest.getStatus(), taskGoingToBeUpdated.getStatus());
+        assertEquals(taskRequest.getDueDate(), taskGoingToBeUpdated.getDueDate());
+        assertNotEquals(oldTask.getUpdateDate(), taskGoingToBeUpdated.getUpdateDate());
+        assertTrue(taskGoingToBeUpdated.getUpdateDate().isAfter(oldTask.getUpdateDate()));
+    }
+
+    @Test
+    void updateTask_shouldThrowExceptionForNonExistentTask() {
+        // Arrange
+        long nonExistentTaskId = 999L;
+        Mockito.when(taskRepository.findById(nonExistentTaskId)).thenReturn(Optional.empty());
+
+        TaskRequest taskRequest = new TaskRequest();
+
+        // Act & Assert
+        assertThrows(TaskNotFoundException.class, () -> {
+            taskService.updateTask(nonExistentTaskId, taskRequest);
+        });
+
+        // Verify if taskRepository has never called "save" method
+        Mockito.verify(taskRepository, Mockito.never()).save(Mockito.any(Task.class));
     }
 
     @Test
