@@ -6,6 +6,7 @@ import com.simonlai.doit.model.Task;
 import com.simonlai.doit.repository.TaskRepository;
 import com.simonlai.doit.service.TaskService;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -126,23 +127,36 @@ class TaskServiceImplTest {
 
     @Test
     void createTask_shouldSaveAndReturnTaskId() {
-        // // Arrange
-        // TaskRequest taskRequest = new TaskRequest();
-        // taskRequest.setTitle("New Task");
-        // taskRequest.setDescription("New Description");
-        // taskRequest.setStatus(0);
-        // taskRequest.setDueDate(LocalDateTime.now().plusDays(1));
+        // Arrange
+        TaskRequest taskRequest = new TaskRequest();
+        taskRequest.setTitle("New Task");
+        taskRequest.setDescription("New Description");
+        taskRequest.setStatus(0);
+        taskRequest.setDueDate(LocalDateTime.now().plusDays(1));
 
-        // Task savedTask = new Task(1L, "New Task", "New Description", 0,
-        //         taskRequest.getDueDate(), LocalDateTime.now(), LocalDateTime.now());
-        // Mockito.when(taskRepository.save(savedTask)).thenReturn(1L);
+        Task savedTask = new Task(1L, taskRequest.getTitle(), taskRequest.getDescription(), taskRequest.getStatus(),
+                taskRequest.getDueDate(), LocalDateTime.now(), LocalDateTime.now());
+//         Mockito.when(taskService.taskRequestConvertToTask(taskRequest)).thenReturn(task);
+        Mockito.when(taskRepository.save(Mockito.any(Task.class))).thenReturn(savedTask);
 
-        // // Act
-        // long taskId = taskService.createTask(taskRequest);
+        // Act
+        long taskId = taskService.createTask(taskRequest);
 
-        // // Assert
-        // assertEquals(1L, taskId);
-        // Mockito.verify(taskRepository, Mockito.times(1)).save(savedTask);
+        // Assert
+        assertEquals(1L, taskId);
+
+        // Verify the correct Task object was saved
+        ArgumentCaptor<Task> taskCaptor = ArgumentCaptor.forClass(Task.class);
+        Mockito.verify(taskRepository).save(taskCaptor.capture());
+        Task capturedTask = taskCaptor.getValue();
+
+        assertNotNull(capturedTask, "The task passed to repository.save() should not be null");
+        assertEquals(taskRequest.getTitle(), capturedTask.getTitle());
+        assertEquals(taskRequest.getDescription(), capturedTask.getDescription());
+        assertEquals(taskRequest.getStatus(), capturedTask.getStatus());
+        assertEquals(taskRequest.getDueDate(), capturedTask.getDueDate());
+        assertNotNull(capturedTask.getCreateDate());
+        assertNotNull(capturedTask.getUpdateDate());
     }
 
     @Test
