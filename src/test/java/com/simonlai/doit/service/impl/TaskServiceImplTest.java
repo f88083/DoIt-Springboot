@@ -221,6 +221,30 @@ class TaskServiceImplTest {
     }
 
     @Test
-    void deleteTaskById() {
+    void deleteTaskById_shouldCallRepositoryMethod() {
+        // Arrange
+        long taskId = 1L;
+
+        // Act
+        taskService.deleteTaskById(taskId);
+
+        // Assert
+        Mockito.verify(taskRepository, Mockito.times(1)).deleteById(taskId);
+    }
+
+    @Test
+    void deleteTaskById_shouldNotThrowExceptionForNonExistentTask() {
+        // Arrange
+        long nonExistentTaskId = 999L;
+
+        // We don't need to set up any specific behavior for the mock,
+        // as JpaRepository's deleteById doesn't throw an exception for non-existent IDs
+
+        // Act & Assert
+        assertDoesNotThrow(() -> {
+            taskService.deleteTaskById(nonExistentTaskId);
+        });
+
+        Mockito.verify(taskRepository, Mockito.times(1)).deleteById(nonExistentTaskId);
     }
 }
