@@ -1,5 +1,6 @@
 package com.simonlai.doit.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,8 +35,9 @@ public class Task {
     private LocalDateTime createDate;
     @Column(nullable = false)
     private LocalDateTime updateDate;
-}
 
-//enum TaskStatus {
-//    IN_PROGRESS, COMPLETED
-//}
+    @ManyToOne
+    @JoinColumn(name = "user_id_fk", referencedColumnName = "id", nullable = false)
+    @JsonIgnore
+    private User userId;
+}

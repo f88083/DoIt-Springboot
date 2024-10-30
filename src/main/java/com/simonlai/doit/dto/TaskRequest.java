@@ -20,5 +20,4 @@ public class TaskRequest {
     private LocalDateTime createDate;
 
     private LocalDateTime updateDate;
-
 }
