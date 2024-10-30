@@ -2,10 +2,14 @@ package com.simonlai.doit.service.impl;
 
 import com.simonlai.doit.dto.TaskRequest;
 import com.simonlai.doit.exception.TaskNotFoundException;
+import com.simonlai.doit.model.User;
 import com.simonlai.doit.repository.TaskRepository;
 import com.simonlai.doit.model.Task;
+import com.simonlai.doit.repository.UserRepository;
 import com.simonlai.doit.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -16,6 +20,8 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private TaskRepository taskRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public List<Task> getAllTasks() {
@@ -73,7 +79,16 @@ public class TaskServiceImpl implements TaskService {
         LocalDateTime now = LocalDateTime.now();
         task.setCreateDate(now);
         task.setUpdateDate(now);
+        // Set current user id
+        task.setUserId(findUserByCurrentLoggedInUser());
 
         return task;
+    }
+
+    // Find user id by username
+    private User findUserByCurrentLoggedInUser() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException(username));
     }
 }
