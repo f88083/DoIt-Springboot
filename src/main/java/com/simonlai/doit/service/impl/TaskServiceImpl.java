@@ -32,7 +32,8 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task getTaskById(Long taskId) {
-        return taskRepository.findById(taskId)
+        User currentUser = findUserByCurrentLoggedInUser();
+        return taskRepository.findAllByTaskIdAndUserId(taskId, currentUser)
                 .orElseThrow(() -> new TaskNotFoundException(taskId));
     }
 
