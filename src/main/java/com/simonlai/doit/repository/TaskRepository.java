@@ -4,6 +4,10 @@ import com.simonlai.doit.model.Task;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
+    // findAllBy + var name of the foreign key in Task.java + var name of the primary key in User.java
+    List<Task> findAllByUserIdId(final Long UserId);
 }

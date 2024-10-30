@@ -25,7 +25,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<Task> getAllTasks() {
-        return taskRepository.findAll();
+        User currentUser = findUserByCurrentLoggedInUser();
+        // Find all tasks from the current user by user id foreign key
+        return taskRepository.findAllByUserIdId(currentUser.getId());
     }
 
     @Override
