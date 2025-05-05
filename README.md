@@ -19,6 +19,8 @@ The main purpose of this project is not just to implement a to-do list, but to u
 
 The backend of DoIt is built using Spring Boot, following a layered architecture:
 
+<img width="664" alt="image" src="https://github.com/user-attachments/assets/54e0ad8d-4407-4f3c-a1a6-f2d1cbc2d1a4" />
+
 1. **Controller Layer**: Handles HTTP requests and responses.
    - `AuthController`: Manages user authentication and registration.
    - `TaskController`: Handles task-related operations.
@@ -45,7 +47,7 @@ Login Process
 - MySQL database
 - JPA and Hibernate for ORM
 
-***TODO: {Place holder for database structure diagram}***
+<img width="546" alt="image" src="https://github.com/user-attachments/assets/aa78399f-0750-442b-917b-d6361e6bd839" />
 
 ### API Endpoints
 
@@ -60,6 +62,8 @@ Login Process
   - POST `/api/v1/tasks`: Create a new task
   - PUT `/api/v1/tasks/{taskId}`: Update an existing task
   - DELETE `/api/v1/tasks/{taskId}`: Delete a task
+
+<img width="1273" alt="image" src="https://github.com/user-attachments/assets/d36478bb-3c18-4cb9-a58c-d832f4b06fa5" />
 
 ## Setup and Configuration
 
@@ -79,6 +83,8 @@ Login Process
 - JWT for authentication
 - Maven for dependency management
 - Docker for database containerization
+
+<img width="1239" alt="image" src="https://github.com/user-attachments/assets/cb13d335-68e9-4490-b322-d3121a5759cf" />
 
 ## Future Improvements
 
